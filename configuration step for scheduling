@@ -1,0 +1,18 @@
+in my clustert node manager are 3 of 8 gb 8*3=24    ( 16 gb [12]
+                                          2*3=6core (4 core[4] 
+8ram 2core we left 4 
+hece 4 ram and 2 core
+
+for schedulig fair shedular go into Yarn------cofigaration------serch scheduler-----in schedular set
+max
+
+we create  container for the shedular
+container memory minimum 3gb
+container memory maximum 3gb
+container memory icremental 1gb
+  
+
+Container Virtual CPU Cores Minimum 1
+Container Virtual CPU Cores Increment 1g
+Container Virtual CPU Cores Maximum 1g
+
