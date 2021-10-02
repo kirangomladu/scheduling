@@ -1,0 +1,61 @@
+************************************************
+	   Understanding Schedulers
+************************************************
+
+
+---** Generate Sample Data **---
+
+$  yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar randomwriter  /data/output/
+
+
+---** Configure Fair Scheduler **--- 
+
+Fair Scheduler XML Advanced Configuration Snippet (Safety Valve)
+
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<allocations>
+    <queue name="root">
+        <schedulingPolicy>fair</schedulingPolicy>
+        <queue name="default">
+            <schedulingPolicy>fair</schedulingPolicy>
+        </queue>
+                <queue name="production">
+            <weight>70.0</weight>
+            <schedulingPolicy>fair</schedulingPolicy>
+        </queue>
+        <queue name="ml">
+            <weight>20.0</weight>
+            <schedulingPolicy>fair</schedulingPolicy>
+        </queue>
+        <queue name="dev">
+            <weight>10.0</weight>
+            <schedulingPolicy>fair</schedulingPolicy>
+        </queue>       
+    </queue>
+    <queuePlacementPolicy>
+        <rule name="specified" create="true"/>
+        <rule name="default" create="true"/>
+    </queuePlacementPolicy>
+    </allocations>
+
+
+---** Running Sample Jobs **---
+###########yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples-*.jar pi  5 10 /data/pi/
+
+$ yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount -Dmapreduce.job.reduces=8 /data/output/ /data/wordcount
+
+$ yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount -Dmapreduce.job.reduces=4 /data/output/part-m-00000 /data/wordcount-part-m-00000
+
+
+
+
+>> Submitting Jobs to queue
+
+$ yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount -Dmapreduce.job.reduces=8 -Dmapred.job.queue.name=production /data/output/ /data/wordcount
+
+$ yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount -Dmapreduce.job.reduces=8 -Dmapred.job.queue.name=production /data/output/part-m-00000 /data/wordcount/part-00
+
+$ yarn jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar wordcount -Dmapreduce.job.reduces=8 -Dmapred.job.queue.name=ml /data/output/part-m-00000 /data/wordcount/part-0011
+
+
